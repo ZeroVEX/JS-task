@@ -13,7 +13,7 @@ const formats = {
     "YYYY/MM/DD" : /^(?<year>[0-9]{4})\/(?<month>0[1-9]|1[0-2])\/(?<day>0[1-9]|[1-2][0-9]|3[0-1])$/,
 }
 
-function DateConverter() {
+export function DateConverter() {
 
 }
 

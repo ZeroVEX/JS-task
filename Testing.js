@@ -1,3 +1,5 @@
+import {DateConverter} from './DateConverter.js';
+
 let converter = new DateConverter();
 let convertedDate = converter.convert("12319999", "MMDDYYYY", "MM/DD/YYYY");
 console.log(convertedDate);
