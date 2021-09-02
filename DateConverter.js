@@ -17,11 +17,7 @@ const formats = {
     "YYYY/MM/DD" : "^" + yearRegex + "/" + monthRegex + "/" + dayRegex + "$",
 }
 
-export function DateConverter() {
-
-}
-
-DateConverter.prototype.convert = function(date, fromFormat, toFormat) {
+export function convertDate(date, fromFormat, toFormat) {
     let fromFormatRegex = formats[fromFormat];
     let toFormatRegex = formats[toFormat];
     if (fromFormatRegex === undefined) {
