@@ -1,16 +1,20 @@
+const yearRegex = "(?<year>[0-9]{4})"
+const monthRegex = "(?<month>0[1-9]|1[0-2])"
+const dayRegex = "(?<day>0[1-9]|[1-2][0-9]|3[0-1])"
+
 const formats = {
-    "DDMMYYYY" : /^(?<day>0[1-9]|[1-2][0-9]|3[0-1])(?<month>0[1-9]|1[0-2])(?<year>[0-9]{4})$/,
-    "MMDDYYYY" : /^(?<month>0[1-9]|1[0-2])(?<day>0[1-9]|[1-2][0-9]|3[0-1])(?<year>[0-9]{4})$/,
-    "YYYYDDMM" : /^(?<year>[0-9]{4})(?<day>0[1-9]|[1-2][0-9]|3[0-1])(?<month>0[1-9]|1[0-2])$/,
-    "YYYYMMDD" : /^(?<year>[0-9]{4})(?<month>0[1-9]|1[0-2])(?<day>0[1-9]|[1-2][0-9]|3[0-1])$/,
-    "DD-MM-YYYY" : /^(?<day>0[1-9]|[1-2][0-9]|3[0-1])-(?<month>0[1-9]|1[0-2])-(?<year>[0-9]{4})$/,
-    "MM-DD-YYYY" : /^(?<month>0[1-9]|1[0-2])-(?<day>0[1-9]|[1-2][0-9]|3[0-1])-(?<year>[0-9]{4})$/,
-    "YYYY-DD-MM" : /^(?<year>[0-9]{4})-(?<day>0[1-9]|[1-2][0-9]|3[0-1])-(?<month>0[1-9]|1[0-2])$/,
-    "YYYY-MM-DD" : /^(?<year>[0-9]{4})-(?<month>0[1-9]|1[0-2])-(?<day>0[1-9]|[1-2][0-9]|3[0-1])$/,
-    "DD/MM/YYYY" : /^(?<day>0[1-9]|[1-2][0-9]|3[0-1])\/(?<month>0[1-9]|1[0-2])\/(?<year>[0-9]{4})$/,
-    "MM/DD/YYYY" : /^(?<month>0[1-9]|1[0-2])\/(?<day>0[1-9]|[1-2][0-9]|3[0-1])\/(?<year>[0-9]{4})$/,
-    "YYYY/DD/MM" : /^(?<year>[0-9]{4})\/(?<day>0[1-9]|[1-2][0-9]|3[0-1])\/(?<month>0[1-9]|1[0-2])$/,
-    "YYYY/MM/DD" : /^(?<year>[0-9]{4})\/(?<month>0[1-9]|1[0-2])\/(?<day>0[1-9]|[1-2][0-9]|3[0-1])$/,
+    "DDMMYYYY" : "^" + dayRegex + monthRegex + yearRegex + "$",
+    "MMDDYYYY" : "^" + monthRegex + dayRegex + yearRegex + "$",
+    "YYYYDDMM" : "^" + yearRegex + dayRegex + monthRegex + "$",
+    "YYYYMMDD" : "^" + yearRegex + monthRegex + dayRegex + "$",
+    "DD-MM-YYYY" : "^" + dayRegex + "-" + monthRegex + "-" + yearRegex + "$",
+    "MM-DD-YYYY" : "^" + monthRegex + "-" + dayRegex + "-" + yearRegex + "$",
+    "YYYY-DD-MM" : "^" + yearRegex + "-" + dayRegex + "-" + monthRegex + "$",
+    "YYYY-MM-DD" : "^" + yearRegex + "-" + monthRegex + "-" + dayRegex + "$",
+    "DD/MM/YYYY" : "^" + dayRegex + "/" + monthRegex + "/" + yearRegex + "$",
+    "MM/DD/YYYY" : "^" + monthRegex + "/" + dayRegex + "/" + yearRegex + "$",
+    "YYYY/DD/MM" : "^" + yearRegex + "/" + dayRegex + "/" + monthRegex + "$",
+    "YYYY/MM/DD" : "^" + yearRegex + "/" + monthRegex + "/" + dayRegex + "$",
 }
 
 export function DateConverter() {
@@ -18,21 +22,21 @@ export function DateConverter() {
 }
 
 DateConverter.prototype.convert = function(date, fromFormat, toFormat) {
-    let regex = formats[fromFormat];
-    if (regex === undefined) {
-        return "From format is not supported"
+    let fromFormatRegex = formats[fromFormat];
+    let toFormatRegex = formats[toFormat];
+    if (fromFormatRegex === undefined) {
+        throw new Error("From format is not supported");
     }
-    if (formats[toFormat] === undefined) {
-        return "To format is not supported"
+    if (toFormatRegex === undefined) {
+        throw new Error("To format is not supported");
     }
-    else if (!regex.test(date)) {
-        return "Date does not match format"
+    fromFormatRegex = new RegExp(fromFormatRegex);
+    if (!fromFormatRegex.test(date)) {
+        throw new Error("Date does not match format");
     }
-    else {
-        let parsedDate = parseDate(date, regex);
-        let convertedDate = buildNewDate(parsedDate, toFormat);
-        return convertedDate;
-    }
+    let parsedDate = parseDate(date, fromFormatRegex);
+    let convertedDate = buildNewDate(parsedDate, toFormat);
+    return convertedDate;
 };
 
 function parseDate(date, regex) {
